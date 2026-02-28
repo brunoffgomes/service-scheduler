@@ -15,7 +15,9 @@
     <artifactId>service-scheduler</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>service-scheduler</name>
+
     <description>Service scheduling API for clients, providers and administrators</description>
+    <description>Initial Spring Boot 4 service scheduler configuration</description>
 
     <properties>
         <java.version>21</java.version>
