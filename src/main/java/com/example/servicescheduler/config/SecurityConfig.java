@@ -1,12 +1,14 @@
 package com.example.servicescheduler.config;
 
+import com.example.servicescheduler.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -24,20 +26,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("client")
-                        .password("{noop}client123")
-                        .roles("CLIENT")
-                        .build(),
-                User.withUsername("provider")
-                        .password("{noop}provider123")
-                        .roles("PROVIDER")
-                        .build(),
-                User.withUsername("admin")
-                        .password("{noop}admin123")
-                        .roles("ADMIN")
-                        .build()
-        );
+    UserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> {
+            com.example.servicescheduler.domain.User appUser = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+            UserDetails userDetails = User.withUsername(appUser.getEmail())
+                    .password(appUser.getPassword())
+                    .roles(appUser.getRole().name())
+                    .build();
+            return userDetails;
+        };
     }
 }

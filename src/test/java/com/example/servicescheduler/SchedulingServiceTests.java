@@ -1,8 +1,10 @@
 package com.example.servicescheduler;
 
+import com.example.servicescheduler.domain.ClientUser;
 import com.example.servicescheduler.domain.ServiceAppointment;
+import com.example.servicescheduler.domain.ServiceProviderUser;
 import com.example.servicescheduler.repository.ClientUserRepository;
-import com.example.servicescheduler.repository.ServiceProviderRepository;
+import com.example.servicescheduler.repository.ServiceProviderUserRepository;
 import com.example.servicescheduler.service.SchedulingService;
 import com.example.servicescheduler.web.dto.ScheduleServiceRequest;
 import org.junit.jupiter.api.Test;
@@ -23,19 +25,22 @@ class SchedulingServiceTests {
     private ClientUserRepository clientUserRepository;
 
     @Autowired
-    private ServiceProviderRepository serviceProviderRepository;
+    private ServiceProviderUserRepository serviceProviderUserRepository;
 
     @Test
     void shouldScheduleServiceForClientAndProvider() {
-        Long clientUserId = clientUserRepository.findAll().getFirst().getId();
-        Long providerId = serviceProviderRepository.findAll().getFirst().getId();
+        ClientUser clientUser = clientUserRepository.findAll().getFirst();
+        ServiceProviderUser providerUser = serviceProviderUserRepository.findAll().getFirst();
 
         ServiceAppointment appointment = schedulingService.schedule(
-                new ScheduleServiceRequest(clientUserId, providerId, LocalDateTime.now().plusDays(1))
+                new ScheduleServiceRequest(clientUser.getId(), providerUser.getId(), LocalDateTime.now().plusDays(1))
         );
 
         assertThat(appointment.getId()).isNotNull();
-        assertThat(appointment.getClientUser().getId()).isEqualTo(clientUserId);
-        assertThat(appointment.getServiceProvider().getId()).isEqualTo(providerId);
+        assertThat(appointment.getClientUser().getId()).isEqualTo(clientUser.getId());
+        assertThat(appointment.getServiceProvider().getId()).isEqualTo(providerUser.getId());
+        assertThat(appointment.getServiceProvider().getServiceType()).isNotBlank();
+        assertThat(appointment.getServiceProvider().getServiceValue()).isPositive();
+        assertThat(appointment.getServiceProvider().getRating()).isPositive();
     }
 }

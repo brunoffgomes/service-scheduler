@@ -1,31 +1,37 @@
 package com.example.servicescheduler.config;
 
-import com.example.servicescheduler.domain.Administrator;
+import com.example.servicescheduler.domain.AdminUser;
 import com.example.servicescheduler.domain.ClientUser;
-import com.example.servicescheduler.domain.ServiceProvider;
-import com.example.servicescheduler.repository.AdministratorRepository;
-import com.example.servicescheduler.repository.ClientUserRepository;
-import com.example.servicescheduler.repository.ServiceProviderRepository;
+import com.example.servicescheduler.domain.ServiceProviderUser;
+import com.example.servicescheduler.domain.UserRole;
+import com.example.servicescheduler.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.math.BigDecimal;
 
 @Configuration
 public class DataInitializer {
 
     @Bean
-    CommandLineRunner seedData(ClientUserRepository clientUserRepository,
-                               ServiceProviderRepository serviceProviderRepository,
-                               AdministratorRepository administratorRepository) {
+    CommandLineRunner seedData(UserRepository userRepository) {
         return args -> {
-            if (clientUserRepository.count() == 0) {
-                clientUserRepository.save(new ClientUser("Default Client", "client@example.com"));
+            if (userRepository.countByRole(UserRole.CLIENT) == 0) {
+                userRepository.save(new ClientUser("Default Client", "client@example.com", "{noop}client123"));
             }
-            if (serviceProviderRepository.count() == 0) {
-                serviceProviderRepository.save(new ServiceProvider("Default Provider", "Haircut", "provider@example.com"));
+            if (userRepository.countByRole(UserRole.PROVIDER) == 0) {
+                userRepository.save(new ServiceProviderUser(
+                        "Default Provider",
+                        "provider@example.com",
+                        "{noop}provider123",
+                        "Haircut",
+                        new BigDecimal("45.00"),
+                        new BigDecimal("4.8")
+                ));
             }
-            if (administratorRepository.count() == 0) {
-                administratorRepository.save(new Administrator("Default Admin", "admin@example.com"));
+            if (userRepository.countByRole(UserRole.ADMIN) == 0) {
+                userRepository.save(new AdminUser("Default Admin", "admin@example.com", "{noop}admin123"));
             }
         };
     }

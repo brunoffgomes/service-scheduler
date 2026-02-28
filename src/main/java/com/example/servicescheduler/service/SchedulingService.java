@@ -2,10 +2,10 @@ package com.example.servicescheduler.service;
 
 import com.example.servicescheduler.domain.ClientUser;
 import com.example.servicescheduler.domain.ServiceAppointment;
-import com.example.servicescheduler.domain.ServiceProvider;
+import com.example.servicescheduler.domain.ServiceProviderUser;
 import com.example.servicescheduler.repository.ClientUserRepository;
 import com.example.servicescheduler.repository.ServiceAppointmentRepository;
-import com.example.servicescheduler.repository.ServiceProviderRepository;
+import com.example.servicescheduler.repository.ServiceProviderUserRepository;
 import com.example.servicescheduler.web.dto.ScheduleServiceRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class SchedulingService {
 
     private final ClientUserRepository clientUserRepository;
-    private final ServiceProviderRepository serviceProviderRepository;
+    private final ServiceProviderUserRepository serviceProviderUserRepository;
     private final ServiceAppointmentRepository serviceAppointmentRepository;
 
     public SchedulingService(ClientUserRepository clientUserRepository,
-                             ServiceProviderRepository serviceProviderRepository,
+                             ServiceProviderUserRepository serviceProviderUserRepository,
                              ServiceAppointmentRepository serviceAppointmentRepository) {
         this.clientUserRepository = clientUserRepository;
-        this.serviceProviderRepository = serviceProviderRepository;
+        this.serviceProviderUserRepository = serviceProviderUserRepository;
         this.serviceAppointmentRepository = serviceAppointmentRepository;
     }
 
@@ -30,7 +30,7 @@ public class SchedulingService {
         ClientUser clientUser = clientUserRepository.findById(request.clientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Client user not found: " + request.clientUserId()));
 
-        ServiceProvider serviceProvider = serviceProviderRepository.findById(request.serviceProviderId())
+        ServiceProviderUser serviceProvider = serviceProviderUserRepository.findById(request.serviceProviderId())
                 .orElseThrow(() -> new IllegalArgumentException("Service provider not found: " + request.serviceProviderId()));
 
         ServiceAppointment serviceAppointment = new ServiceAppointment(clientUser, serviceProvider, request.scheduledAt());

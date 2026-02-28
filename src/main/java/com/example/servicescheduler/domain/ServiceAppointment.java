@@ -26,7 +26,7 @@ public class ServiceAppointment {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "service_provider_id", nullable = false)
-    private ServiceProvider serviceProvider;
+    private ServiceProviderUser serviceProvider;
 
     @Column(nullable = false)
     private LocalDateTime scheduledAt;
@@ -34,7 +34,7 @@ public class ServiceAppointment {
     protected ServiceAppointment() {
     }
 
-    public ServiceAppointment(ClientUser clientUser, ServiceProvider serviceProvider, LocalDateTime scheduledAt) {
+    public ServiceAppointment(ClientUser clientUser, ServiceProviderUser serviceProvider, LocalDateTime scheduledAt) {
         this.clientUser = clientUser;
         this.serviceProvider = serviceProvider;
         this.scheduledAt = scheduledAt;
@@ -48,7 +48,7 @@ public class ServiceAppointment {
         return clientUser;
     }
 
-    public ServiceProvider getServiceProvider() {
+    public ServiceProviderUser getServiceProvider() {
         return serviceProvider;
     }
 
