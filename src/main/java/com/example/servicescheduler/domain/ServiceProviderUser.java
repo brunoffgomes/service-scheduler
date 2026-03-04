@@ -10,13 +10,14 @@ import java.math.BigDecimal;
 @DiscriminatorValue("PROVIDER")
 public class ServiceProviderUser extends User {
 
-    @Column(nullable = false)
+    // In SINGLE_TABLE inheritance these columns must allow null for non-provider rows.
+    @Column
     private String serviceType;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal serviceValue;
 
-    @Column(nullable = false, precision = 2, scale = 1)
+    @Column(precision = 2, scale = 1)
     private BigDecimal rating;
 
     protected ServiceProviderUser() {
